@@ -20,8 +20,8 @@ function usage ()
 
   echo
   echo "Available Hosts:"
-  ls -1 /opt/muxer/etc/hosts/* | sort \
-    | sed -e 's/^/  /' -e 's;/opt/muxer/etc/hosts/;;'
+  ls -v1 /opt/spp/etc/hosts/* \
+    | sed -e 's/^/  /' -e 's;/opt/spp/etc/hosts/;;'
 }
 
 function die ()
@@ -67,6 +67,18 @@ function act_rdp ()
   echo-do rdesktop -a 8 -T $DST 192.168.1.$id
 }
 
+function act_port ()
+{
+  while true; do
+    tempport=`shuf -i 2000-65000 -n 1`
+    if ! [ $(netstat -an|grep LISTEN|awk '{print $4}'|sed -e 's/:::/:'/|cut -d ":" -f2|grep -Ex '[0-9]*'|grep $tempport) ]; then
+      break;
+    fi;
+  done
+  echo $tempport
+  exit 0
+}
+
 function act_ssh ()
 {
   [ -z "$SSH_TTY" ] && warn "You realy should use 'ssh -t' to be able to have a responsive terminal"
@@ -84,10 +96,9 @@ function act_tunnel ()
   echo-do ssh -q \
     -o UserKnownHostsFile=/dev/null \
     -o StrictHostKeyChecking=no \
-    -L 0.0.0.0:$PORT:$DST:$PORT \
+    -L 0.0.0.0:$DYNPORT:$ip:$PORT \
     root@$ip
 }
-
 
 [ "$1" = "-c" ] && shift
 [ $# -eq 0 ] && { usage 1>&2 ; exit 1 ; }
@@ -96,16 +107,16 @@ action=$LOGNAME
 A=$1
 set -- ${A//%/ }
 DST=$1
-PORT=$2
+[ "$action" == "port" ] || [ "$action" == "tunnel" ] && PORT=$2 && DYNPORT=$3
 
 if ! declare -f act_$action > /dev/null ; then
   usage 1>&2
   exit 2
 else
-  [ ! -e "/opt/muxer/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
-
-  . /opt/muxer/etc/hosts/$DST
-  [ -z "$id" ] && die "Missing ID for $DST"
-
+  if ! [ "$action" == "port" ];then
+    [ ! -e "/opt/spp/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
+    . /opt/spp/etc/hosts/$DST
+    [ -z "$id" ] && die "Missing ID for $DST"
+  fi
   act_$action
 fi
