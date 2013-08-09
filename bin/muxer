@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# (c) 2012 - Steven Le Roux <steven@le-roux.info>
+#
+
+HOSTNAME=$(hostname -f)
+
+function usage ()
+{
+  echo "Usage: ssh {<opt>} <action>@${HOSTNAME} <host>"
+
+  echo
+  echo "Available opt:"
+  echo "  -t		for ssh/tunnel"
+  echo "  -X or -Y	for vnc/rdp"
+
+  echo
+  echo "Available actions:"
+  declare -F | sed -ne 's/declare -f act_\(.*\)/  \1/p'
+
+  echo
+  echo "Available Hosts:"
+  ls -1 /opt/muxer/etc/hosts/* | sort \
+    | sed -e 's/^/  /' -e 's;/opt/muxer/etc/hosts/;;'
+}
+
+function die ()
+{
+  echo "FATAL: $@" 1>&2
+  exit 2
+}
+
+function warn ()
+{
+  echo "WARN: $@" 1>&2
+}
+
+function echo-do ()
+{
+  echo "# $@" 1>&2
+  $*
+}
+
+function act_vnc ()
+{
+  [ -z "$DISPLAY" ] && warn "You really sould use 'ssh -Y' to be able to get a window display"
+
+  local _lock_file=/var/lock/${0##*/}-${action}-${DST}
+  
+  if dotlockfile -c ${_lock_file} ; then
+    die "Someone is already connected: $(< $_lock_file)"
+  else
+    dotlockfile -l -p ${_lock_file}
+    echo ${SSH_CLIENT} > $_lock_file
+  fi
+
+  vinagre $ip
+  #vinagre 127.0.0.1:$id
+
+  dotlockfile -u ${_lock_file}
+}
+
+function act_rdp ()
+{
+  [ -z "$DISPLAY" ] && warn "You realy sould use 'ssh -Y' to be able to get a window display"
+
+  echo-do rdesktop -a 8 -T $DST 192.168.1.$id
+}
+
+function act_ssh ()
+{
+  [ -z "$SSH_TTY" ] && warn "You realy should use 'ssh -t' to be able to have a responsive terminal"
+
+  echo-do ssh -q \
+    -o UserKnownHostsFile=/dev/null \
+    -o StrictHostKeyChecking=no \
+    root@$ip
+}
+
+function act_tunnel ()
+{
+  [ -z "$SSH_TTY" ] && warn "You realy should use 'ssh -t' to be able to have a responsive terminal"
+  echo "act_tunnel :"
+  echo-do ssh -q \
+    -o UserKnownHostsFile=/dev/null \
+    -o StrictHostKeyChecking=no \
+    -L 0.0.0.0:$PORT:$DST:$PORT \
+    root@$ip
+}
+
+
+[ "$1" = "-c" ] && shift
+[ $# -eq 0 ] && { usage 1>&2 ; exit 1 ; }
+
+action=$LOGNAME
+A=$1
+set -- ${A//%/ }
+DST=$1
+PORT=$2
+
+if ! declare -f act_$action > /dev/null ; then
+  usage 1>&2
+  exit 2
+else
+  [ ! -e "/opt/muxer/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
+
+  . /opt/muxer/etc/hosts/$DST
+  [ -z "$id" ] && die "Missing ID for $DST"
+
+  act_$action
+fi
