@@ -14,11 +14,13 @@ User n (Network  Z)  ---> |___| ---> ...
 
 ```
 
-It becomes easier for network/access policies team to manage SSH and host access through their network :
+It becomes easier for network/access policies team to manage SSH and host access through their networks : 
+
 ```
 ANY:ANY -> spp:22
 SPP:ANY -> ANY:22
 ```
+SSH access is not anymore host/network related. SPP provides a by-user access policies, but simply base on SSH-KEYS and SSH-AGENT features.
 
 ## Usage:
 ```
