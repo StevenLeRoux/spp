@@ -1,5 +1,25 @@
 # SPP - SSH Proxy Platform
 
+SPP is a defined as an SSH Proxy Platform to provide an access through a `bounce Host` without any shell access. By default, a user is granted by his SSH key deployed in authorized_keys and has access to a defined list of Host, but you can change these and put some glue to inherit some rule from a CMDB or a user database.
+
+The goal is resumed like this : 
+
+```
+                           ___
+User 1 (Network  A)  ---> |   | ---> Network ...
+                          |   | ---> Host n
+User 2 (Network ...) ---> |SPP| ---> Routers
+                          |   | ---> Switches
+User n (Network  Z)  ---> |___| ---> ...
+
+```
+
+This become easy for network/access policies team to manage SSH and host access through their network :
+```
+ANY:ANY -> spp:22
+SPP:ANY -> ANY:22
+```
+
 ## Usage:
 ```
 Usage: ssh {<opt>} <action>@<host> [<args>]
@@ -76,3 +96,25 @@ In the previous example, we have :
 A:8080    -> SPP:30455
 SPP:30455 -> 1.host:8080
 ```
+
+##
+
+Just git clone in your prefered directory (e.g. /opt/spp) so that you have :
+
+```
+(/opt/spp)/bin
+          /bin/spp
+          /etc
+          /etc/host/
+          /etc/host/[host list]
+          /wrappers
+          /wrappers/sshp
+          /wrappers/sshtunnel
+```
+
+* Now create a user for each `action` you want to provide (e.g. ssh/tunnel/port/vnc/rdp/...)
+* Deploy ssh keys for the user you want to grant on a given `action`.
+* Adjust the Host list the user group can access. ( etc/hosts/...)
+* Modify the `/etc/passwd` file to replace the default shell (seventh field) by the SPP binary (e.g. /opt/spp/bin/spp)
+
+You're good to go.
