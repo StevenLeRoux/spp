@@ -13,7 +13,7 @@ function echo-do ()
 }
 
 
-DYNPORT=`eval ssh port@$SPP getport`
+DYNPORT=`eval ssh tunnel@$SPP getport`
 echo-do ssh -At -q \
     -o UserKnownHostsFile=/dev/null \
     -o StrictHostKeyChecking=no \
