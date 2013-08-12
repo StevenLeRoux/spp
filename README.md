@@ -30,6 +30,13 @@ To go to 1.host.domain.tld :
 ```
 ssh -At ssh@spp 1.host.domain.tld
 ```
+#### Client wrapper
+
+`sshp <HOST>`
+
+e.g. :
+
+`sshp 1.host.domain.tld`
 
 ### Tunnel 
 
@@ -47,7 +54,9 @@ e.g. :
 ssh -At tunnel@spp 1.host.domain.tld 8080 30455
 ```
 
-or w/ a more straightforward wrapper like this : 
+#### Client wrapper :
+
+This wrapper provide a more straightforward way of use : 
 
 ```
 sshtunnel 1.labs.arkea.com 8080
