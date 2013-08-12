@@ -62,7 +62,7 @@ e.g. :
 
 ### Tunnel 
 
-The `tunnel` action provide you a tunnel from your localhost to your destination through the SPP host.
+The `tunnel` action provides you a tunnel from your localhost to your destination through the SPP host. It useful for devs or users who need to address locally a backend/database/... but using an SSH tunnel to access the service on a given Host.
 
 You can either use it this way :
 
