@@ -97,7 +97,7 @@ A:8080    -> SPP:30455
 SPP:30455 -> 1.host:8080
 ```
 
-##
+## Install
 
 Just git clone in your prefered directory (e.g. /opt/spp) so that you have :
 
@@ -118,3 +118,11 @@ Just git clone in your prefered directory (e.g. /opt/spp) so that you have :
 * Modify the `/etc/passwd` file to replace the default shell (seventh field) by the SPP binary (e.g. /opt/spp/bin/spp)
 
 You're good to go.
+
+## Deployment tips
+
+* Make a template LXC container to bring all the rules you want to isolate a bit more between user groups. This way you can have a different @bouce_host_ip, one for sysadmins, one for network team, one for devs... but give them the same actions (ssh@devs, ssh@network, ssh@dba, ...)
+
+## Todo list
+
+* Modify the getport method to use the same action `ssh -At tunnel@spp getport`
