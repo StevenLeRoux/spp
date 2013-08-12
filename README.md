@@ -14,7 +14,7 @@ User n (Network  Z)  ---> |___| ---> ...
 
 ```
 
-This become easy for network/access policies team to manage SSH and host access through their network :
+It becomes easier for network/access policies team to manage SSH and host access through their network :
 ```
 ANY:ANY -> spp:22
 SPP:ANY -> ANY:22
