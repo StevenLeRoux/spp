@@ -1,0 +1,20 @@
+#!/bin/bash
+
+SPP="spp_host" #fill yours
+
+
+
+DST=$1
+
+
+function echo-do ()
+{
+  echo "# $@" 1>&2
+  $*
+}
+
+
+echo-do ssh -At -q \
+    -o UserKnownHostsFile=/dev/null \
+    -o StrictHostKeyChecking=no \
+    ssh@$SPP $DST

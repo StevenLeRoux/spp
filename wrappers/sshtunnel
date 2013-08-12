@@ -1,0 +1,21 @@
+#!/bin/bash
+
+SPP="spp_host" #fill yours
+
+DST=$1
+PORT=$2
+
+
+function echo-do ()
+{
+  echo "# $@" 1>&2
+  $*
+}
+
+
+DYNPORT=`eval ssh port@$SPP getport`
+echo-do ssh -At -q \
+    -o UserKnownHostsFile=/dev/null \
+    -o StrictHostKeyChecking=no \
+    -L 0.0.0.0:$PORT:localhost:$DYNPORT \
+    tunnel@$SPP $DST $PORT $DYNPORT
