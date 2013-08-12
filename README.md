@@ -38,7 +38,7 @@ The `tunnel` action provide you a tunnel from your localhost to your destination
 You can either use it this way :
 
 ```
-ssh -At tunnel@spp 1.host.domain.tld <port> <dynamic_port>
+ssh -At tunnel@spp <HOST> <PORT> <DYNAMIC_PORT>
 ```
 
 e.g. : 
