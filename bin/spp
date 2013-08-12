@@ -20,6 +20,10 @@ function usage ()
   declare -F | sed -ne 's/declare -f act_\(.*\)/  \1/p'
 
   echo
+  echo "Available help:"
+  echo "  For each <action> : ssh <action>@spp help
+"
+  echo
   echo "Available Hosts:"
   ls -v1 $INSTALL_DIR/etc/hosts/* \
     | sed -e 's/^/  /' -e "s;$INSTALL_DIR/etc/hosts/;;"
@@ -68,21 +72,14 @@ function act_rdp ()
   echo-do rdesktop -a 8 -T $DST 192.168.1.$id
 }
 
-function act_port ()
-{
-  while true; do
-    tempport=`shuf -i 2000-65000 -n 1`
-    if ! [ $(netstat -an|grep LISTEN|awk '{print $4}'|sed -e 's/:::/:'/|cut -d ":" -f2|grep -Ex '[0-9]*'|grep $tempport) ]; then
-      break;
-    fi;
-  done
-  echo $tempport
-  exit 0
-}
-
 function act_ssh ()
 {
   [ -z "$SSH_TTY" ] && warn "You realy should use 'ssh -t' to be able to have a responsive terminal"
+  
+  if [ "$DST" == "help" ];then
+    echo " ssh -At ssh@spp <HOST>"
+    exit 0
+  fi
 
   echo-do ssh -q \
     -o UserKnownHostsFile=/dev/null \
@@ -92,6 +89,25 @@ function act_ssh ()
 
 function act_tunnel ()
 {
+  if [ "$DST" == "help" ];then
+    echo "1. ssh -At tunnel@spp getport"
+    echo "2. ssh -At tunnel@spp <HOST> <PORT> <DYNAMIC_PORT>"
+    echo "or use the wrapper :"
+    echo "   sshtunnel <HOST> <PORT>"
+    exit 0
+  fi
+
+  if [ "$DST" == "getport" ];then
+    while true; do
+      tempport=`shuf -i 2000-65000 -n 1`
+      if ! [ $(netstat -an|grep LISTEN|awk '{print $4}'|sed -e 's/:::/:'/|cut -d ":" -f2|grep -Ex '[0-9]*'|grep $tempport) ]; then
+        break;
+      fi;
+    done
+    echo $tempport
+    exit 0
+  fi
+
   [ -z "$SSH_TTY" ] && warn "You realy should use 'ssh -t' to be able to have a responsive terminal"
   echo "act_tunnel :"
   echo-do ssh -q \
@@ -114,7 +130,7 @@ if ! declare -f act_$action > /dev/null ; then
   usage 1>&2
   exit 2
 else
-  if ! [ "$action" == "port" ];then
+  if ! [ "$DST" == "getport" -o "$DST" == "help" ];then
     [ ! -e "$INSTALL_DIR/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
     . $INSTALL_DIR/etc/hosts/$DST
     [ -z "$id" ] && die "Missing ID for $DST"
