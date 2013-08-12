@@ -1,9 +1,7 @@
 # SPP - SSH Proxy Platform
 
-======
-
 ## Usage:
-
+```
 Usage: ssh {<opt>} <action>@<host> [<args>]
 
 Available opt:
@@ -22,6 +20,7 @@ Available Hosts:
   2.host.domain.tld
   3.host.domain.tld
   4.host.domain.tld
+```
 
 ## Actions
 
@@ -57,13 +56,14 @@ sshtunnel 1.labs.arkea.com 8080
 The wrapper handles the dynamic port negociation to manage multiple client tunnel to the same host/port. The wrapper basically just call `ssh port@spp getport` and immediatly mount the tunnel using this unallocated port.
 
 Then the user just needs to join localhost:port.
-
+```
  ___                       _____                        __________
 |   |                     |     |                      |          |
 | A | --- ssh tunnel ---> | SPP |  --- ssh tunnel ---> | 1.host...|
 |___|                     |_____|                      |__________|
-
+```
 In the previous example, we have : 
-
+```
 A:8080    -> SPP:30455
 SPP:30455 -> 1.host:8080
+```
