@@ -3,6 +3,7 @@
 # (c) 2012 - Steven Le Roux <steven@le-roux.info>
 #
 
+INSTALL_DIR="/opt/spp"
 HOSTNAME=$(hostname -f)
 
 function usage ()
@@ -20,8 +21,8 @@ function usage ()
 
   echo
   echo "Available Hosts:"
-  ls -v1 /opt/spp/etc/hosts/* \
-    | sed -e 's/^/  /' -e 's;/opt/spp/etc/hosts/;;'
+  ls -v1 $INSTALL_DIR/etc/hosts/* \
+    | sed -e 's/^/  /' -e "s;$INSTALL_DIR/etc/hosts/;;"
 }
 
 function die ()
@@ -114,8 +115,8 @@ if ! declare -f act_$action > /dev/null ; then
   exit 2
 else
   if ! [ "$action" == "port" ];then
-    [ ! -e "/opt/spp/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
-    . /opt/spp/etc/hosts/$DST
+    [ ! -e "$INSTALL_DIR/etc/hosts/$DST" ] && { usage 1>&2 ; exit 1 ; }
+    . $INSTALL_DIR/etc/hosts/$DST
     [ -z "$id" ] && die "Missing ID for $DST"
   fi
   act_$action
