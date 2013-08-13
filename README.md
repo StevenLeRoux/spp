@@ -31,11 +31,14 @@ Available opt:
   -X or -Y      for vnc/rdp
 
 Available actions:
-  port
   rdp
   ssh
   tunnel
   vnc
+
+Available help:
+  For each <action> : ssh <action>@spp help
+
 
 Available Hosts:
   1.host.domain.tld
