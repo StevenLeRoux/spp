@@ -123,8 +123,7 @@ You're good to go.
 
 ## Deployment tips
 
-* Make a template LXC container to bring all the rules you want to isolate a bit more between user groups. This way you can have a different @bouce_host_ip, one for sysadmins, one for network team, one for devs... but give them the same actions (ssh@devs, ssh@network, ssh@dba, ...)
+* Make an LXC container to bring all the rules you want isolated a bit more between user groups. This way you can have a different @bouce_host_ip, one for sysadmins, one for network team, one for devs... but give them the same actions (ssh@devs, ssh@network, ssh@dba, ...)
 
 ## Todo list
 
-* Modify the getport method to use the same action `ssh -At tunnel@spp getport`
