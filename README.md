@@ -20,7 +20,7 @@ It becomes easier for network/access policies team to manage SSH and host access
 ANY:ANY -> spp:22
 SPP:ANY -> ANY:22
 ```
-SSH access is not anymore host/network related. SPP provides a by-user access policies, but simply base on SSH-KEYS and SSH-AGENT features.
+SSH access is not anymore host/network related. SPP provides a by-user access policies, simply based on SSH-KEYS and SSH-AGENT features.
 
 ## Usage:
 ```
