@@ -129,4 +129,4 @@ You're good to go.
 * Make an LXC container to bring all the rules you want isolated a bit more between user groups. This way you can have a different @bouce_host_ip, one for sysadmins, one for network team, one for devs... but give them the same actions (ssh@devs, ssh@network, ssh@dba, ...)
 
 ## Todo list
-
+ * Improve user fine management (instead of default root user for the target host)
