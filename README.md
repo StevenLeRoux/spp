@@ -130,3 +130,4 @@ You're good to go.
 
 ## Todo list
  * Improve user fine management (instead of default root user for the target host)
+ * Fix rdp
